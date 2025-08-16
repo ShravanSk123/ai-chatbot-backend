@@ -33,7 +33,7 @@ public class ChatController : ControllerBase
                     new { role = "user", content = request.Message }
                 }
         };
-
+        _settings.ApiKey = Environment.GetEnvironmentVariable("GROQ_API_KEY") ?? throw new Exception("Missing GROQ_API_KEY");
         var content = new StringContent(JsonSerializer.Serialize(payload), Encoding.UTF8, "application/json");
         _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _settings.ApiKey);
 
