@@ -41,6 +41,7 @@ if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
 }
 
 app.UseHttpsRedirection();
+app.UseCors("Production");
 app.UseAuthorization();
 app.MapControllers();
 app.Run();
