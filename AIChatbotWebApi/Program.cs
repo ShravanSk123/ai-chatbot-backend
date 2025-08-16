@@ -14,6 +14,22 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddHttpClient();
 
+//cors
+builder.Services.AddCors(options =>
+{
+    // More restrictive policy for production
+    options.AddPolicy("Production", policy =>
+    {
+        policy.WithOrigins(
+                "http://localhost:3000",
+                "https://ai-chatbot-frontend-theta.vercel.app"
+              )
+              .AllowAnyMethod()
+              .AllowAnyHeader()
+              .AllowCredentials();
+    });
+});
+
 
 var app = builder.Build();
 
