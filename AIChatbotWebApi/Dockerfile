@@ -1,22 +1,20 @@
-# Use the official .NET SDK image for build
+# Stage 1: Build
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
 
-# Copy csproj and restore dependencies
-COPY *.csproj ./
+# Copy csproj and restore
+COPY AIChatbotWebApi/AIChatbotWebApi.csproj ./
 RUN dotnet restore
 
-# Copy the rest of the code and publish
-COPY . ./
+# Copy all source files and publish
+COPY AIChatbotWebApi/ ./
 RUN dotnet publish -c Release -o /app/publish
 
-# Use the runtime image for production
+# Stage 2: Runtime
 FROM mcr.microsoft.com/dotnet/aspnet:7.0
 WORKDIR /app
 COPY --from=build /app/publish .
 
-# Expose port 80 for Render
 EXPOSE 80
 
-# Run the app
 ENTRYPOINT ["dotnet", "AIChatbotWebApi.dll"]
