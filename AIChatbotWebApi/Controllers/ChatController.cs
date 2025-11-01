@@ -1,3 +1,4 @@
+using AIChatbotWebApi.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System.Net.Http.Headers;
@@ -70,24 +71,4 @@ public class ChatController : ControllerBase
         plainText = Regex.Replace(plainText, @"\n{2,}", "\n").Trim();
         return plainText;
     }
-}
-
-public class ChatRequest
-{
-    public string? Message { get; set; }
-}
-public class GroqResponse
-{
-    public Choice[]? choices { get; set; }
-}
-
-public class Choice
-{
-    public Message? message { get; set; }
-}
-
-public class Message
-{
-    public string? role { get; set; }
-    public string? content { get; set; }
 }
