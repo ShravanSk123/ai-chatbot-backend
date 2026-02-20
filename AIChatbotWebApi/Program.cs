@@ -1,7 +1,9 @@
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+// Bind to Northflank port
+builder.WebHost.UseUrls($"http://0.0.0.0:{Environment.GetEnvironmentVariable("PORT")}");
+
+// Config
 builder.Configuration
     .SetBasePath(Directory.GetCurrentDirectory())
     .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
@@ -9,15 +11,15 @@ builder.Configuration
 
 builder.Services.Configure<GroqSettings>(
     builder.Configuration.GetSection("GroqCloud"));
+
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddHttpClient();
 
-//cors
+// CORS
 builder.Services.AddCors(options =>
 {
-    // More restrictive policy for production
     options.AddPolicy("Production", policy =>
     {
         policy.WithOrigins(
@@ -30,20 +32,19 @@ builder.Services.AddCors(options =>
     });
 });
 
-
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.UseSwagger();
+app.UseSwaggerUI();
 
-app.UseHttpsRedirection();
+// app.UseHttpsRedirection();
+
 app.UseCors("Production");
 app.UseAuthorization();
+
 app.MapControllers();
+app.MapGet("/health", () => "OK");
+
 app.Run();
 
 public class GroqSettings
